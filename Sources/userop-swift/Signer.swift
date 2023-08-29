@@ -11,5 +11,5 @@ import Web3Core
 public protocol Signer {
     func getAddress() async -> EthereumAddress
 
-    func signMessage(_ data: Data) async -> Data
+    func signMessage(_ data: Data) async throws -> Data
 }

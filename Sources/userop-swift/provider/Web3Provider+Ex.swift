@@ -9,7 +9,7 @@ import Foundation
 import Web3Core
 
 extension Web3Provider {
-    public func send<Result>(_ method: String, parameter: [Encodable]) async throws -> APIResponse<Result> {
-        return try await APIRequest.send(method, parameter: parameter, with: self)
+    public func send<Result>(_ call: APIRequest) async throws -> APIResponse<Result> {
+        try await APIRequest.sendRequest(with: self, for: call)
     }
 }

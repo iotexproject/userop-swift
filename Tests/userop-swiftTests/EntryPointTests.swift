@@ -73,12 +73,4 @@ final class EntryPointTests: XCTestCase {
         
         print(logs)
     }
-    
-    func testQuery() async throws {
-        let provider = try await Web3HttpProvider(url: URL(string: "https://babel-api.testnet.iotex.io")!, network: .Custom(networkID: 4690))
-        let web3 =  Web3(provider: provider)
-        let entry = EntryPoint(web3: web3, address: .init("0xc3527348De07d591c9d567ce1998eFA2031B8675")!)
-        let logs = try await entry.queryFilter()
-        print(logs)
-    }
 }

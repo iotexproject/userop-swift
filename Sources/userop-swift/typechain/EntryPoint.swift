@@ -26,38 +26,41 @@ public class EntryPoint: IEntryPoint {
         self.web3 = web3
         self.address = address
         self.contract = try! EthereumContract(Abi.entryPoint, at: address)
-//        contract.events
     }
 
     public func getSenderAddress(initCode: Data) async throws -> EthereumAddress {
-        let data = contract.method("getSenderAddress", parameters: [initCode], extraData: nil)!
-
-        let res = try await web3.eth.callTransaction(.init(to: address, data: data))
-        guard let decoded = contract.decodeEthError(res), let sender = decoded["sender"] as? EthereumAddress else {
-            throw Web3Error.valueError(desc: "call getSenderAddress failed: can not decode sender address")
+        do {
+            try await contract.callStatic("getSenderAddress", parameters: [initCode], provider: web3.provider)
+            throw Web3Error.dataError
+        } catch Web3Error.revertCustom(_, let args) {
+            guard let address =  args["sender"] as? EthereumAddress else {
+                throw Web3Error.dataError
+            }
+            return address
         }
-
-        return sender
     }
 
     public func getNonce(sender: EthereumAddress, key: BigInt) async throws -> BigUInt {
-        fatalError("TODO")
+        let response = try await contract.callStatic("getNonce", parameters: [sender, key], provider: web3.provider)
+        guard let nonce = response["0"] as? BigUInt else {
+            throw Web3Error.dataError
+        }
+        return nonce
     }
 
-    public func userOperationEvent() -> [EventFilterParameters.Topic?]? {
-        let result = contract.events["UserOperationEvent"]?.encodeParameters([
-            "0x2c16c07e1c68d502e9c7ad05f0402b365671a0e6517cb807b2de4edd95657042",
-        ])
-
-        return result
-    }
-
-    public func queryFilter() async throws -> [EventLog] {
-        let topics = userOperationEvent()!
+    public func queryUserOperationEvent(userOpHash: Hash) async throws -> [EventLog] {
         let block = try await web3.eth.block(by: .latest)
+        return try await contract.queryFilter("UserOperationEvent", parameters: [userOpHash], fromBlock: .exact(block.number - 100), provider: web3.provider)
+    }
+}
 
-        let parameters = EventFilterParameters(fromBlock: .exact(block.number - 10000), address: [address], topics: topics)
-        let result = try await web3.eth.getLogs(eventFilter: parameters)
-        return result
+extension ContractProtocol {
+    func queryFilter(_ event: String, parameters: [Encodable], fromBlock: BlockNumber = .latest, toBlock: BlockNumber = .latest, provider: Web3Provider) async throws -> [EventLog] {
+        guard let event = events[event], let address = address else {
+            throw Web3Error.dataError
+        }
+        let topics = event.encodeParameters(parameters)
+        let filter = EventFilterParameters(fromBlock: fromBlock, toBlock: toBlock, address: [address], topics: topics)
+        return try await provider.send(.getLogs(filter)).result
     }
 }

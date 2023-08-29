@@ -7,6 +7,7 @@
 
 import Foundation
 import Web3Core
+import BigInt
 
 public class JsonRpcProvider: Web3Provider {
     public let url: URL
@@ -19,8 +20,29 @@ public class JsonRpcProvider: Web3Provider {
         return urlSession
     }()
 
-    public init(url: URL, network: Networks? = nil) {
+    public init(url: URL, network net: Networks? = nil, keystoreManager manager: KeystoreManager? = nil) async throws {
+        guard url.scheme == "http" || url.scheme == "https" else {
+            throw Web3Error.inputError(desc: "Web3HttpProvider endpoint must have scheme http or https. Given scheme \(url.scheme ?? "none"). \(url.absoluteString)")
+        }
+
         self.url = url
-        self.network = network
+        if let net = net {
+            network = net
+        } else {
+            /// chain id could be a hex string or an int value.
+            let response: String = try await APIRequest.send(APIRequest.getNetwork.call, parameter: [], with: self).result
+            let result: UInt
+            if response.hasHexPrefix() {
+                result = UInt(BigUInt(response, radix: 16) ?? Networks.Mainnet.chainID)
+            } else {
+                result = UInt(response) ?? UInt(Networks.Mainnet.chainID)
+            }
+            self.network = Networks.fromInt(result)
+        }
+        attachedKeystoreManager = manager
+    }
+
+    public func send<Result>(_ method: String, parameter: [Encodable]) async throws -> APIResponse<Result> {
+        return try await APIRequest.send(method, parameter: parameter, with: self)
     }
 }

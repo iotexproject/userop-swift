@@ -7,13 +7,13 @@
 
 import Foundation
 import BigInt
-import web3swift
+import Web3Core
 
 public struct GasPriceMiddleware: UserOperationMiddleware {
-    private let web3: Web3
+    private let provider: JsonRpcProvider
 
-    init(web3: Web3) {
-        self.web3 = web3
+    init(provider: JsonRpcProvider) {
+        self.provider = provider
     }
 
     public func process(_ ctx: inout UserOperationMiddlewareContext) async throws {
@@ -21,7 +21,6 @@ public struct GasPriceMiddleware: UserOperationMiddleware {
             let (maxFeePerGas, maxPriorityFeePerGas) = try await eip1559GasPrice()
             ctx.op.maxFeePerGas = maxFeePerGas
             ctx.op.maxPriorityFeePerGas = maxPriorityFeePerGas
-            return
         } catch {
             let (maxFeePerGas, maxPriorityFeePerGas) = try await legacyGasPrice()
             ctx.op.maxFeePerGas = maxFeePerGas;
@@ -30,8 +29,8 @@ public struct GasPriceMiddleware: UserOperationMiddleware {
     }
 
     private func eip1559GasPrice() async throws -> (BigUInt, BigUInt) {
-        let fee: BigUInt = try await web3.provider.send("eth_maxPriorityFeePerGas", parameter: []).result
-        let block = try await web3.eth.block(by: .latest)
+        let fee: BigUInt = try await provider.send("eth_maxPriorityFeePerGas", parameter: []).result
+        let block: Block = try await provider.send(.getBlockByNumber(.latest, false)).result
 
         let buffer = fee / 100 * 13
         let maxPriorityFeePerGas = fee + buffer
@@ -40,7 +39,7 @@ public struct GasPriceMiddleware: UserOperationMiddleware {
     }
 
     private func legacyGasPrice() async throws -> (BigUInt, BigUInt) {
-        let gas = try await web3.eth.gasPrice()
+        let gas: BigUInt = try await provider.send(.gasPrice).result
         return (gas, gas)
     }
 }

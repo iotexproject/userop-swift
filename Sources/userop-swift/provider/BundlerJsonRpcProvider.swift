@@ -10,7 +10,7 @@ import web3swift
 import Web3Core
 
 public class BundlerJsonRpcProvider: JsonRpcProvider {
-    private var bundlerProvider: Web3Provider? = nil
+    private var bundlerProvider: JsonRpcProvider? = nil
     private let bundlerMethods = [
         "eth_sendUserOperation",
         "eth_estimateUserOperationGas",
@@ -26,15 +26,14 @@ public class BundlerJsonRpcProvider: JsonRpcProvider {
 //        case getUserOperationReceipt = "eth_getUserOperationReceipt"
 //        case supportedEntryPoints = "eth_supportedEntryPoints"
 //    }
-
-    init(url: URL, bundlerRpc: URL? = nil, network: Networks? = nil) {
-        super.init(url: url, network: network)
+    public init(url: URL, bundlerRpc: URL? = nil, network net: Networks? = nil, keystoreManager manager: KeystoreManager? = nil) async throws {
+        try await super.init(url: url, network: net)
         if let bundlerRpc = bundlerRpc {
-            self.bundlerProvider = JsonRpcProvider(url: bundlerRpc, network: network)
+            self.bundlerProvider = try await JsonRpcProvider(url: bundlerRpc, network: network)
         }
     }
 
-    public func send<Result>(_ method: String, parameter: [Encodable]) async throws -> APIResponse<Result> {
+    public override func send<Result>(_ method: String, parameter: [Encodable]) async throws -> APIResponse<Result> {
         if bundlerMethods.contains(method) && bundlerProvider != nil {
             return try await bundlerProvider!.send(method, parameter: parameter)
         }

@@ -9,18 +9,18 @@ import BigInt
 import Foundation
 import Web3Core
 
-public struct UserOperation {
+public struct UserOperation: Encodable {
     var sender: EthereumAddress
     var nonce: BigUInt
     var initCode: Data
     var callData: Data
     var callGasLimit: BigUInt
-var verificationGasLimit: BigUInt;
- var preVerificationGas: BigUInt;
- var maxFeePerGas: BigUInt;
-var  maxPriorityFeePerGas: BigUInt;
- var paymasterAndData: Data;
- var signature: Data;
+    var verificationGasLimit: BigUInt;
+    var preVerificationGas: BigUInt;
+    var maxFeePerGas: BigUInt;
+    var maxPriorityFeePerGas: BigUInt;
+    var paymasterAndData: Data;
+    var signature: Data;
 
     static var `default`: Self {
         UserOperation (
@@ -35,7 +35,36 @@ var  maxPriorityFeePerGas: BigUInt;
             maxPriorityFeePerGas:  0,
             paymasterAndData: Data(),
             signature:  Data()
-            )
+        )
+    }
+
+    enum CodingKeys: CodingKey {
+        case sender
+        case nonce
+        case initCode
+        case callData
+        case callGasLimit
+        case verificationGasLimit
+        case preVerificationGas
+        case maxFeePerGas
+        case maxPriorityFeePerGas
+        case paymasterAndData
+        case signature
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(sender, forKey: .sender)
+        try container.encodeHex(nonce, forKey: .nonce)
+        try container.encodeHex(initCode, forKey: .initCode)
+        try container.encodeHex(callData, forKey: .callData)
+        try container.encodeHex(callGasLimit, forKey: .callGasLimit)
+        try container.encodeHex(verificationGasLimit, forKey: .verificationGasLimit)
+        try container.encodeHex(preVerificationGas, forKey: .preVerificationGas)
+        try container.encodeHex(maxFeePerGas, forKey: .maxFeePerGas)
+        try container.encodeHex(maxPriorityFeePerGas, forKey: .maxPriorityFeePerGas)
+        try container.encodeHex(paymasterAndData, forKey: .paymasterAndData)
+        try container.encodeHex(signature, forKey: .signature)
     }
 }
 
@@ -48,7 +77,7 @@ public protocol IUserOperationBuilder {
     var verificationGasLimit: BigUInt { get set }
     var preVerificationGas: BigUInt { get set }
     var maxFeePerGas: BigUInt { get set }
-    var  maxPriorityFeePerGas: BigUInt { get set }
+    var maxPriorityFeePerGas: BigUInt { get set }
     var paymasterAndData: Data { get set }
     var signature: Data { get set }
 
@@ -159,6 +188,4 @@ open class UserOperationBuilder: IUserOperationBuilder {
         op = UserOperation.default
         return self
     }
-
-
 }

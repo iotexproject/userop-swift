@@ -66,6 +66,4 @@ public class UserOperationMiddlewareContext: UserOperationMiddlewareContextType 
 
         return enc.sha3(.keccak256).toHexString()
     }
-
-
 }

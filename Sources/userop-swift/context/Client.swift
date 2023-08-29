@@ -12,6 +12,7 @@ import web3swift
 
 public struct SendUserOperationResponse {
     let userOpHash: String
+    let wait: () async throws -> EventLog?
 }
 
 public protocol IClient {
@@ -40,8 +41,8 @@ public class Client: IClient {
 
     init(rpcUrl: URL,
          overrideBundlerRpc: URL? = nil,
-         entryPoint: EthereumAddress = EthereumAddress(ERC4337.entryPoint)!) {
-        self.provider = BundlerJsonRpcProvider(url: rpcUrl, bundlerRpc: overrideBundlerRpc)
+         entryPoint: EthereumAddress = EthereumAddress(ERC4337.entryPoint)!) async throws {
+        self.provider = try await BundlerJsonRpcProvider(url: rpcUrl, bundlerRpc: overrideBundlerRpc)
         self.web3 = Web3(provider: provider)
         self.entryPoint = EntryPoint(web3: web3, address: entryPoint)
     }
@@ -55,9 +56,30 @@ public class Client: IClient {
         let op = try await buildUserOperation(builder: builder)
         onBuild?(op)
 
-        let userOphash: String = try await dry ? UserOperationMiddlewareContext(op: op, entryPoint: entryPoint.address, chainId: chainId).getUserOpHash() : provider.send("eth_sendUserOperation", parameter: []).result
+        let userOphash: String
+        if dry {
+            userOphash = UserOperationMiddlewareContext(op: op, entryPoint: entryPoint.address, chainId: chainId).getUserOpHash()
+        } else {
+            userOphash = try await provider.send("eth_sendUserOperation", parameter: [op, entryPoint.address]).result
+        }
         builder.reset()
 
-        return .init(userOpHash: userOphash)
+        let wait = { [self] () async throws -> EventLog? in
+            if dry {
+                return nil
+            }
+
+            let end = Date.now.addingTimeInterval(300)
+            while Date.now.distance(to: end) > 0 {
+                let events = try await entryPoint.queryUserOperationEvent(userOpHash: userOphash)
+                if (!events.isEmpty) {
+                    return events[0]
+                }
+            }
+
+            return nil
+        }
+
+        return .init(userOpHash: userOphash, wait: wait)
     }
 }

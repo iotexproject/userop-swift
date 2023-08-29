@@ -22,7 +22,7 @@ public struct VerifyingPaymasterMiddleware: UserOperationMiddleware {
 
     public func process(_ ctx: inout UserOperationMiddlewareContext) async throws {
         ctx.op.verificationGasLimit = ctx.op.verificationGasLimit * 3
-        let provider = BundlerJsonRpcProvider(url: paymasterRpc)
+        let provider = try await BundlerJsonRpcProvider(url: paymasterRpc)
         let response: APIResponse<VerifyingPaymasterResult> = try await provider.send("pm_sponsorUserOperation", parameter: [])
 
         ctx.op.paymasterAndData = response.result.paymasterAndData

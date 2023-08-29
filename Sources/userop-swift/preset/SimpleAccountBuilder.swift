@@ -41,7 +41,7 @@ public class SimpleAccountBuilder: UserOperationBuilder {
                 salt: BigInt? = nil,
                 paymasterMiddleware: UserOperationMiddleware? = nil) async throws {
         self.signer = signer
-        self.provider = BundlerJsonRpcProvider(url: rpcUrl, bundlerRpc: bundleRpcUrl)
+        self.provider = try await BundlerJsonRpcProvider(url: rpcUrl, bundlerRpc: bundleRpcUrl)
         self.web3 = Web3(provider: self.provider)
         self.entryPoint = EntryPoint(web3: web3, address: entryPoint)
         self.factory = SimpleAccountFactory(web3: web3, address: entryPoint)
@@ -53,11 +53,11 @@ public class SimpleAccountBuilder: UserOperationBuilder {
 
         let address = try await self.entryPoint.getSenderAddress(initCode: initCode)
         self.sender = address
-        self.signature = await signer.signMessage(Data("0xdead".bytes.sha3(.keccak256)))
+        self.signature = try await signer.signMessage(Data("0xdead".bytes.sha3(.keccak256)))
 
         useMiddleware(ResolveAccountMiddleware(entryPoint: self.entryPoint, initCode: initCode))
-        useMiddleware(GasPriceMiddleware(web3: web3))
-        useMiddleware(paymasterMiddleware != nil ? paymasterMiddleware! : GasEstimateMiddleware())
+        useMiddleware(GasPriceMiddleware(provider: provider))
+        useMiddleware(paymasterMiddleware != nil ? paymasterMiddleware! : GasEstimateMiddleware(rpcProvider: provider))
     }
 
     public func execute(to: EthereumAddress, value: BigUInt, data: Data) async throws {
