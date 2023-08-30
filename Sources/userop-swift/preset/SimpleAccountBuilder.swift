@@ -53,11 +53,12 @@ public class SimpleAccountBuilder: UserOperationBuilder {
 
         let address = try await self.entryPoint.getSenderAddress(initCode: initCode)
         self.sender = address
-        self.signature = try await signer.signMessage(Data("0xdead".bytes.sha3(.keccak256)))
+        self.signature = try await signer.signMessage(Data(hex: "0xdead").sha3(.keccak256))
 
         useMiddleware(ResolveAccountMiddleware(entryPoint: self.entryPoint, initCode: initCode))
         useMiddleware(GasPriceMiddleware(provider: provider))
         useMiddleware(paymasterMiddleware != nil ? paymasterMiddleware! : GasEstimateMiddleware(rpcProvider: provider))
+        useMiddleware(SignatureMiddleware(signer: signer))
     }
 
     public func execute(to: EthereumAddress, value: BigUInt, data: Data) async throws {

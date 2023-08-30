@@ -190,4 +190,4 @@ iOSInjectionProject/
 
 .DS_Store
 
-Tests/privateTests
+Tests/userop-swiftTests/privateTests
