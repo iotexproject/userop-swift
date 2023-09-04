@@ -15,6 +15,7 @@ public protocol IEntryPoint {
 
     func getSenderAddress(initCode: Data) async throws -> EthereumAddress
     func getNonce(sender: EthereumAddress, key: BigInt) async throws -> BigUInt
+    func queryUserOperationEvent(userOpHash: Hash) async throws -> [EventLog]
 }
 
 public class EntryPoint: IEntryPoint {

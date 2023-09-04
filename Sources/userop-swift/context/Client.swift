@@ -12,20 +12,30 @@ import web3swift
 
 public struct SendUserOperationResponse {
     let userOpHash: String
-    let wait: () async throws -> EventLog?
+    let entryPoint: IEntryPoint
+
+    func wait() async throws -> EventLog? {
+        let end = Date.now.addingTimeInterval(300)
+        while Date.now.distance(to: end) > 0 {
+            let events = try await entryPoint.queryUserOperationEvent(userOpHash: userOpHash)
+            if (!events.isEmpty) {
+                return events[0]
+            }
+        }
+
+        return nil
+    }
 }
 
 public protocol IClient {
     func buildUserOperation(builder: IUserOperationBuilder) async throws -> UserOperation
 
-    func sendUserOperation(builder: IUserOperationBuilder,
-                           dryRun: Bool?,
-                           onBuild: ((UserOperation) -> Void)?) async throws -> SendUserOperationResponse
+    func sendUserOperation(builder: IUserOperationBuilder, onBuild: ((UserOperation) -> Void)?) async throws -> SendUserOperationResponse
 }
 
 extension IClient {
     func sendUserOperation(builder: IUserOperationBuilder)  async throws -> SendUserOperationResponse {
-        try await sendUserOperation(builder: builder, dryRun: false, onBuild: nil)
+        try await sendUserOperation(builder: builder, onBuild: nil)
     }
 }
 
@@ -51,35 +61,13 @@ public class Client: IClient {
         try await builder.build(entryPoint: entryPoint.address, chainId: chainId)
     }
 
-    public func sendUserOperation(builder: IUserOperationBuilder, dryRun: Bool?, onBuild: ((UserOperation) -> Void)?) async throws -> SendUserOperationResponse {
-        let dry = dryRun ?? false
+    public func sendUserOperation(builder: IUserOperationBuilder, onBuild: ((UserOperation) -> Void)?) async throws -> SendUserOperationResponse {
         let op = try await buildUserOperation(builder: builder)
         onBuild?(op)
 
-        let userOphash: String
-        if dry {
-            userOphash = UserOperationMiddlewareContext(op: op, entryPoint: entryPoint.address, chainId: chainId).getUserOpHash()
-        } else {
-            userOphash = try await provider.send("eth_sendUserOperation", parameter: [op, entryPoint.address]).result
-        }
+        let userOphash: String  = try await provider.send("eth_sendUserOperation", parameter: [op, entryPoint.address]).result
         builder.reset()
 
-        let wait = { [self] () async throws -> EventLog? in
-            if dry {
-                return nil
-            }
-
-            let end = Date.now.addingTimeInterval(300)
-            while Date.now.distance(to: end) > 0 {
-                let events = try await entryPoint.queryUserOperationEvent(userOpHash: userOphash)
-                if (!events.isEmpty) {
-                    return events[0]
-                }
-            }
-
-            return nil
-        }
-
-        return .init(userOpHash: userOphash, wait: wait)
+        return .init(userOpHash: userOphash, entryPoint: entryPoint)
     }
 }

@@ -30,20 +30,27 @@ extension GasEstimate {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-//        self.preVerificationGas = try container.decodeHex(BigUInt.self, forKey: .preVerificationGas)
-//        self.verificationGasLimit = try container.decodeHex(BigUInt.self, forKey: .verificationGasLimit)
-//        self.callGasLimit = try container.decodeHex(BigUInt.self, forKey: .callGasLimit)
-        let preVerificationGas = try container.decode(Int.self, forKey: .preVerificationGas)
-        let verificationGasLimit = try container.decode(Int.self, forKey: .verificationGasLimit)
-        let callGasLimit = try container.decode(Int.self, forKey: .callGasLimit)
-        self.init(preVerificationGas: BigUInt(preVerificationGas),
-                  verificationGasLimit: BigUInt(verificationGasLimit),
-                  callGasLimit: BigUInt(callGasLimit))
+        do {
+            let preVerificationGas = try container.decodeHex(BigUInt.self, forKey: .preVerificationGas)
+            let verificationGasLimit = try container.decodeHex(BigUInt.self, forKey: .verificationGasLimit)
+            let callGasLimit = try container.decodeHex(BigUInt.self, forKey: .callGasLimit)
+            self.init(preVerificationGas: preVerificationGas,
+                      verificationGasLimit: verificationGasLimit,
+                      callGasLimit: callGasLimit)
+        } catch {
+            let preVerificationGas = try container.decode(Int.self, forKey: .preVerificationGas)
+            let verificationGasLimit = try container.decode(Int.self, forKey: .verificationGasLimit)
+            let callGasLimit = try container.decode(Int.self, forKey: .callGasLimit)
+            self.init(preVerificationGas: BigUInt(preVerificationGas),
+                      verificationGasLimit: BigUInt(verificationGasLimit),
+                      callGasLimit: BigUInt(callGasLimit))
+        }
     }
 }
 
 public struct GasEstimateMiddleware: UserOperationMiddleware {
     let rpcProvider: JsonRpcProvider
+
     public func process(_ ctx: inout UserOperationMiddlewareContext) async throws {
         let estimate: GasEstimate = try await rpcProvider.send("eth_estimateUserOperationGas", parameter: [ctx.op, ctx.entryPoint]).result
 

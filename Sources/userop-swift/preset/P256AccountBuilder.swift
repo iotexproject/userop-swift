@@ -1,8 +1,8 @@
 //
-//  SimpleAccountBuilder.swift
+//  P256AccountBuilder.swift
 //  
 //
-//  Created by liugang zhang on 2023/8/22.
+//  Created by liugang zhang on 2023/8/30.
 //
 
 import BigInt
@@ -10,7 +10,7 @@ import Foundation
 import Web3Core
 import web3swift
 
-public class SimpleAccountBuilder: UserOperationBuilder {
+public class P256AccountBuilder: UserOperationBuilder {
     struct ResolveAccountMiddleware: UserOperationMiddleware {
         private let entryPoint: IEntryPoint
         private let initCode: Data
@@ -30,29 +30,29 @@ public class SimpleAccountBuilder: UserOperationBuilder {
     private let web3: Web3
     private let provider: JsonRpcProvider
     private let entryPoint: EntryPoint
-    private let factory: SimpleAccountFactory
-    private let proxy: SimpleAccount
+    private let factory: IP256AccountFactory
+    private let proxy: IP256Account
 
     public init(signer: Signer,
                 rpcUrl: URL,
                 bundleRpcUrl: URL? = nil,
-                entryPoint: EthereumAddress = EthereumAddress(ERC4337.entryPoint)!,
-                factory: EthereumAddress = EthereumAddress(ERC4337.SimpleAccount.factory)!,
+                entryPoint: EthereumAddress,
+                factory: EthereumAddress,
                 salt: BigInt? = nil,
                 paymasterMiddleware: UserOperationMiddleware? = nil) async throws {
         self.signer = signer
         self.provider = try await BundlerJsonRpcProvider(url: rpcUrl, bundlerRpc: bundleRpcUrl)
         self.web3 = Web3(provider: self.provider)
         self.entryPoint = EntryPoint(web3: web3, address: entryPoint)
-        self.factory = SimpleAccountFactory(web3: web3, address: entryPoint)
-        self.proxy = SimpleAccount(web3: web3, address: EthereumAddress.zero)
+        self.factory = P256AccountFactory(web3: web3, address: entryPoint)
+        self.proxy = P256Account(web3: web3, address: EthereumAddress.zero)
         super.init()
 
         initCode = await factory.addressData +
-         self.factory.contract.method("createAccount", parameters: [signer.getAddress(), salt ?? 0], extraData: nil)!
+         self.factory.contract.method("createAccount", parameters: [signer.getPublicKey(), salt ?? 0], extraData: nil)!
 
         let address = try await self.entryPoint.getSenderAddress(initCode: initCode)
-        self.proxy.address = address
+        self.proxy.contract.address = address
         self.sender = address
         self.signature = try await signer.signMessage(Data(hex: "0xdead").sha3(.keccak256))
 
