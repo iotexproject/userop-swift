@@ -55,7 +55,6 @@ final class SimpleAccountTests: XCTestCase {
         let client = try await Client(rpcUrl: rpc, overrideBundlerRpc: bundler, entryPoint: entryPointAddress)
         let response = try await client.sendUserOperation(builder: account)
         let eventLog = try await response.wait()
-        print(eventLog)
         XCTAssertNotNil(eventLog)
     }
 

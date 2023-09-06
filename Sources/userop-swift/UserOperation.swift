@@ -9,18 +9,22 @@ import BigInt
 import Foundation
 import Web3Core
 
+let DEFAULT_VERIFICATION_GAS_LIMIT = BigUInt(70000);
+let DEFAULT_CALL_GAS_LIMIT = BigUInt(35000);
+let DEFAULT_PRE_VERIFICATION_GAS = BigUInt(21000);
+
 public struct UserOperation: Encodable {
     var sender: EthereumAddress
     var nonce: BigUInt
     var initCode: Data
     var callData: Data
     var callGasLimit: BigUInt
-    var verificationGasLimit: BigUInt;
-    var preVerificationGas: BigUInt;
-    var maxFeePerGas: BigUInt;
-    var maxPriorityFeePerGas: BigUInt;
-    var paymasterAndData: Data;
-    var signature: Data;
+    var verificationGasLimit: BigUInt
+    var preVerificationGas: BigUInt
+    var maxFeePerGas: BigUInt
+    var maxPriorityFeePerGas: BigUInt
+    var paymasterAndData: Data
+    var signature: Data
 
     static var `default`: Self {
         UserOperation (
@@ -86,13 +90,8 @@ public protocol IUserOperationBuilder {
 
     func build(entryPoint: EthereumAddress, chainId: BigUInt) async throws -> UserOperation
 
-    func reset() -> UserOperationBuilder
+    func reset()
 }
-
-let DEFAULT_VERIFICATION_GAS_LIMIT = BigUInt(70000);
-let DEFAULT_CALL_GAS_LIMIT = BigUInt(35000);
-let DEFAULT_PRE_VERIFICATION_GAS = BigUInt(21000);
-
 
 open class UserOperationBuilder: IUserOperationBuilder {
     private var op: UserOperation
@@ -103,7 +102,6 @@ open class UserOperationBuilder: IUserOperationBuilder {
     ) {
         self.op = op ?? UserOperation.default
     }
-
 
     public var sender: EthereumAddress {
         get {
@@ -164,8 +162,6 @@ open class UserOperationBuilder: IUserOperationBuilder {
         set {op.signature = newValue }
     }
 
-
-
     public func useMiddleware(_ middleware: UserOperationMiddleware) {
         middlewares.append(middleware)
     }
@@ -184,8 +180,7 @@ open class UserOperationBuilder: IUserOperationBuilder {
         return ctx.op
     }
 
-    public func reset() -> UserOperationBuilder {
+    public func reset() {
         op = UserOperation.default
-        return self
     }
 }

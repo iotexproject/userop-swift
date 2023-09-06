@@ -29,9 +29,9 @@ public class P256AccountBuilder: UserOperationBuilder {
     private let signer: Signer
     private let web3: Web3
     private let provider: JsonRpcProvider
-    private let entryPoint: EntryPoint
-    private let factory: IP256AccountFactory
-    private let proxy: IP256Account
+    public let entryPoint: EntryPoint
+    public let factory: IP256AccountFactory
+    public let proxy: IP256Account
 
     public init(signer: Signer,
                 rpcUrl: URL,
@@ -62,11 +62,11 @@ public class P256AccountBuilder: UserOperationBuilder {
         useMiddleware(SignatureMiddleware(signer: signer))
     }
 
-    public func execute(to: EthereumAddress, value: BigUInt, data: Data) async throws {
+    public func execute(to: EthereumAddress, value: BigUInt, data: Data) {
         callData = proxy.contract.method("execute", parameters: [to, value, data], extraData: nil)!
     }
 
-    public func executeBatch(to: [EthereumAddress], data: [Data]) async throws {
-        callData = proxy.contract.method("executeBatch", parameters: [to, data], extraData: nil)!
+    public func executeBatch(to: [EthereumAddress], value: [BigUInt], data: [Data]) {
+        callData = proxy.contract.method("executeBatch", parameters: [to, value, data], extraData: nil)!
     }
 }

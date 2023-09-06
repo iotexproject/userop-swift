@@ -13,14 +13,14 @@ public class JsonRpcProvider: Web3Provider {
     public let url: URL
     public var network: Networks?
     public var policies: Policies = .auto
-    public var attachedKeystoreManager: KeystoreManager?
+    public var attachedKeystoreManager: KeystoreManager? = nil
     public var session: URLSession = {() -> URLSession in
         let config = URLSessionConfiguration.default
         let urlSession = URLSession(configuration: config)
         return urlSession
     }()
 
-    public init(url: URL, network net: Networks? = nil, keystoreManager manager: KeystoreManager? = nil) async throws {
+    public init(url: URL, network net: Networks? = nil, ignoreNet: Bool = false) async throws {
         guard url.scheme == "http" || url.scheme == "https" else {
             throw Web3Error.inputError(desc: "Web3HttpProvider endpoint must have scheme http or https. Given scheme \(url.scheme ?? "none"). \(url.absoluteString)")
         }
@@ -28,7 +28,7 @@ public class JsonRpcProvider: Web3Provider {
         self.url = url
         if let net = net {
             network = net
-        } else {
+        } else if !ignoreNet {
             /// chain id could be a hex string or an int value.
             let response: String = try await APIRequest.send(APIRequest.getNetwork.call, parameter: [], with: self).result
             let result: UInt
@@ -39,7 +39,6 @@ public class JsonRpcProvider: Web3Provider {
             }
             self.network = Networks.fromInt(result)
         }
-        attachedKeystoreManager = manager
     }
 
     public func send<Result>(_ method: String, parameter: [Encodable]) async throws -> APIResponse<Result> {

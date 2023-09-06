@@ -73,7 +73,6 @@ struct P256R1Signer: Signer {
 //          ] as CFDictionary, nil)!
         var error: Unmanaged<CFError>?
         pk = SecKeyCreateWithData(x963 as CFData, params as CFDictionary, &error)
-        print(error as Any)
 
         pub = SecKeyCopyPublicKey(pk!)
     }
@@ -87,7 +86,7 @@ struct P256R1Signer: Signer {
     }
 
     func signMessage(_ data: Data) async throws -> Data {
-        let signed = SecKeyCreateSignature(pk!, .ecdsaSignatureDigestX962SHA256, data as CFData, nil)! as Data
+        let signed = SecKeyCreateSignature(pk!, .ecdsaSignatureMessageX962SHA256, data as CFData, nil)! as Data
         let xLength = UInt(from: signed[3..<4].toHexString())!
 
         let signatureArray = [

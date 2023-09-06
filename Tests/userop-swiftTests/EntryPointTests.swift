@@ -71,6 +71,6 @@ final class EntryPointTests: XCTestCase {
             ]
         )
         
-        print(logs)
+        XCTAssertEqual(logs?.count, 6)
     }
 }

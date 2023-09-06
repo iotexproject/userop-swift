@@ -26,8 +26,8 @@ public class BundlerJsonRpcProvider: JsonRpcProvider {
 //        case getUserOperationReceipt = "eth_getUserOperationReceipt"
 //        case supportedEntryPoints = "eth_supportedEntryPoints"
 //    }
-    public init(url: URL, bundlerRpc: URL? = nil, network net: Networks? = nil, keystoreManager manager: KeystoreManager? = nil) async throws {
-        try await super.init(url: url, network: net)
+    public init(url: URL, bundlerRpc: URL? = nil, network net: Networks? = nil, ignoreNet: Bool = false) async throws {
+        try await super.init(url: url, network: net, ignoreNet: ignoreNet)
         if let bundlerRpc = bundlerRpc {
             self.bundlerProvider = try await JsonRpcProvider(url: bundlerRpc, network: network)
         }
