@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
     spec.swift_version = '5.8'
 
     spec.source_files =  "Sources/userop-swift/**/*.swift"
-    spec.frameworks = 'Foudation'
+    spec.frameworks = 'Foundation'
 
     spec.dependency 'Web3Core'
     spec.dependency 'web3swift'
