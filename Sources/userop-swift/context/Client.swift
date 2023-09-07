@@ -18,7 +18,7 @@ public struct SendUserOperationResponse {
         let end = Date.now.addingTimeInterval(300)
         while Date.now.distance(to: end) > 0 {
             let events = try await entryPoint.queryUserOperationEvent(userOpHash: userOpHash)
-            if (!events.isEmpty) {
+            if !events.isEmpty {
                 return events[0]
             }
         }

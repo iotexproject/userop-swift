@@ -191,3 +191,4 @@ iOSInjectionProject/
 .DS_Store
 
 Tests/userop-swiftTests/privateTests
+.vscode

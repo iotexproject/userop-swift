@@ -12,11 +12,10 @@ import Web3Core
 
 struct VerifyingPaymasterResult: APIResultType {
     var paymasterAndData: Data
-    var preVerificationGas: BigUInt;
-    var verificationGasLimit: BigUInt;
-    var callGasLimit: BigUInt;
+    var preVerificationGas: BigUInt
+    var verificationGasLimit: BigUInt
+    var callGasLimit: BigUInt
 }
-
 
 extension VerifyingPaymasterResult {
     enum CodingKeys: CodingKey {
@@ -48,7 +47,6 @@ extension VerifyingPaymasterResult {
         }
     }
 }
-
 
 public struct VerifyingPaymasterMiddleware: UserOperationMiddleware {
     let paymasterRpc: URL

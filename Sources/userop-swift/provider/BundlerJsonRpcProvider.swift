@@ -16,16 +16,9 @@ public class BundlerJsonRpcProvider: JsonRpcProvider {
         "eth_estimateUserOperationGas",
         "eth_getUserOperationByHash",
         "eth_getUserOperationReceipt",
-        "eth_supportedEntryPoints",
-      ];
+        "eth_supportedEntryPoints"
+    ]
 
-//    enum BundlerMethods: CaseIterable, String {
-//        case sendUserOperation = "eth_sendUserOperation"
-//        case estimateUserOperationGas = "eth_estimateUserOperationGas"
-//        case getUserOperationByHash = "eth_getUserOperationByHash"
-//        case getUserOperationReceipt = "eth_getUserOperationReceipt"
-//        case supportedEntryPoints = "eth_supportedEntryPoints"
-//    }
     public init(url: URL, bundlerRpc: URL? = nil, network net: Networks? = nil, ignoreNet: Bool = false) async throws {
         try await super.init(url: url, network: net, ignoreNet: ignoreNet)
         if let bundlerRpc = bundlerRpc {
@@ -38,27 +31,5 @@ public class BundlerJsonRpcProvider: JsonRpcProvider {
             return try await bundlerProvider!.send(method, parameter: parameter)
         }
         return try await super.send(method, parameter: parameter)
-    }
-}
-
-extension IEth {
-    func supportedEntryPoints() async throws -> [EthereumAddress] {
-        fatalError("TODO")
-    }
-
-    func sendUserOperation() async throws {
-        fatalError("TODO")
-    }
-
-    func estimateUserOperationGas() async throws {
-        fatalError("TODO")
-    }
-
-    func getUserOperationByHash() async throws {
-        fatalError("TODO")
-    }
-
-    func getUerOperationReceipt() async throws {
-        fatalError("TODO")
     }
 }

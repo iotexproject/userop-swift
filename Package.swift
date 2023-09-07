@@ -12,11 +12,11 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "userop-swift",
-            targets: ["userop-swift"]),
+            targets: ["userop-swift"])
     ],
     dependencies: [
-        .package(url: "https://github.com/attaswift/BigInt.git", from:  "5.3.0"),
-        .package(url: "https://github.com/zhangliugang/web3swift.git", branch: "userop"),
+        .package(url: "https://github.com/attaswift/BigInt.git", from: "5.3.0"),
+        .package(url: "https://github.com/zhangliugang/web3swift.git", branch: "userop")
 //        .package(path: "../../web3swift")
     ],
     targets: [
@@ -26,6 +26,6 @@ let package = Package(
             name: "userop-swift", dependencies: ["BigInt", "web3swift"]),
         .testTarget(
             name: "userop-swiftTests",
-            dependencies: ["userop-swift"]),
+            dependencies: ["userop-swift"])
     ]
 )

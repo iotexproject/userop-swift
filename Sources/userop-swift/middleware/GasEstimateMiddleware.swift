@@ -13,12 +13,6 @@ struct GasEstimate: APIResultType {
     let preVerificationGas: BigUInt
     let verificationGasLimit: BigUInt
     let callGasLimit: BigUInt
-
-    init(preVerificationGas: BigUInt, verificationGasLimit: BigUInt, callGasLimit: BigUInt) {
-        self.preVerificationGas = preVerificationGas
-        self.verificationGasLimit = verificationGasLimit
-        self.callGasLimit = callGasLimit
-    }
 }
 
 extension GasEstimate {

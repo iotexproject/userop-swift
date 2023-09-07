@@ -14,7 +14,6 @@ public protocol IP256AccountFactory {
     var contract: EthereumContract { get }
 
     func getAddress(publicKey: Data, salt: BigInt) async throws -> EthereumAddress
-    func createAccount(publicKey: Data, salt: BigInt) async throws -> TransactionSendingResult
 }
 
 public class P256AccountFactory: IP256AccountFactory {
@@ -38,10 +37,4 @@ public class P256AccountFactory: IP256AccountFactory {
         }
         return returnAddress
     }
-
-    public func createAccount(publicKey: Data, salt: BigInt) async throws -> TransactionSendingResult {
-        fatalError("TODO")
-    }
-
-
 }

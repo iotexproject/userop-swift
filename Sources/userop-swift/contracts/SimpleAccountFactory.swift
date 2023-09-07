@@ -12,9 +12,8 @@ import web3swift
 
 public protocol ISimpleAccountFactory {
     var contract: EthereumContract { get }
-    
+
     func getAddress(owner: EthereumAddress, salt: BigInt) async throws -> EthereumAddress
-    func createAccount(owner: EthereumAddress, salt: BigInt) async throws -> TransactionSendingResult
 }
 
 public class SimpleAccountFactory: ISimpleAccountFactory {
@@ -38,10 +37,4 @@ public class SimpleAccountFactory: ISimpleAccountFactory {
         }
         return returnAddress
     }
-
-    public func createAccount(owner: EthereumAddress, salt: BigInt) async throws -> TransactionSendingResult {
-        fatalError("TODO")
-    }
-
-
 }

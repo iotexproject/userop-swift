@@ -23,8 +23,8 @@ public struct GasPriceMiddleware: UserOperationMiddleware {
             ctx.op.maxPriorityFeePerGas = maxPriorityFeePerGas
         } catch {
             let (maxFeePerGas, maxPriorityFeePerGas) = try await legacyGasPrice()
-            ctx.op.maxFeePerGas = maxFeePerGas;
-            ctx.op.maxPriorityFeePerGas = maxPriorityFeePerGas;
+            ctx.op.maxFeePerGas = maxFeePerGas
+            ctx.op.maxPriorityFeePerGas = maxPriorityFeePerGas
         }
     }
 

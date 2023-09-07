@@ -9,9 +9,9 @@ import BigInt
 import Foundation
 import Web3Core
 
-let DEFAULT_VERIFICATION_GAS_LIMIT = BigUInt(70000);
-let DEFAULT_CALL_GAS_LIMIT = BigUInt(35000);
-let DEFAULT_PRE_VERIFICATION_GAS = BigUInt(21000);
+let defaultVerificationGasLimit = BigUInt(70000)
+let defaultCallGasLimit = BigUInt(35000)
+let defaultPreVerificationGas = BigUInt(21000)
 
 public struct UserOperation: Encodable {
     var sender: EthereumAddress
@@ -27,18 +27,18 @@ public struct UserOperation: Encodable {
     var signature: Data
 
     static var `default`: Self {
-        UserOperation (
-            sender:  EthereumAddress.zero,
-            nonce:  0,
-            initCode:  Data(),
+        UserOperation(
+            sender: EthereumAddress.zero,
+            nonce: 0,
+            initCode: Data(),
             callData: Data(),
-            callGasLimit:  DEFAULT_CALL_GAS_LIMIT,
-            verificationGasLimit:  DEFAULT_VERIFICATION_GAS_LIMIT,
-            preVerificationGas:  DEFAULT_PRE_VERIFICATION_GAS,
-            maxFeePerGas:  0,
-            maxPriorityFeePerGas:  0,
+            callGasLimit: defaultCallGasLimit,
+            verificationGasLimit: defaultVerificationGasLimit,
+            preVerificationGas: defaultPreVerificationGas,
+            maxFeePerGas: 0,
+            maxPriorityFeePerGas: 0,
             paymasterAndData: Data(),
-            signature:  Data()
+            signature: Data()
         )
     }
 
@@ -104,12 +104,8 @@ open class UserOperationBuilder: IUserOperationBuilder {
     }
 
     public var sender: EthereumAddress {
-        get {
-            return op.sender
-        }
-        set {
-            op.sender = newValue
-        }
+        get { return op.sender }
+        set { op.sender = newValue }
     }
 
     public var nonce: BigUInt {
@@ -133,33 +129,33 @@ open class UserOperationBuilder: IUserOperationBuilder {
     }
 
     public var verificationGasLimit: BigUInt {
-        get {return op.verificationGasLimit }
-        set {op.verificationGasLimit = newValue}
+        get { return op.verificationGasLimit }
+        set { op.verificationGasLimit = newValue}
     }
 
     public var preVerificationGas: BigUInt {
         get { return op.preVerificationGas}
-        set { op.preVerificationGas = newValue}
+        set { op.preVerificationGas = newValue }
     }
 
     public var maxFeePerGas: BigUInt {
-        get { return op.maxFeePerGas}
-        set { op.maxFeePerGas = newValue}
+        get { return op.maxFeePerGas }
+        set { op.maxFeePerGas = newValue }
     }
 
     public var maxPriorityFeePerGas: BigUInt {
-        get { return op.maxPriorityFeePerGas}
-        set { op.maxPriorityFeePerGas = newValue}
+        get { return op.maxPriorityFeePerGas }
+        set { op.maxPriorityFeePerGas = newValue }
     }
 
     public var paymasterAndData: Data {
-        get {return op.paymasterAndData}
-        set { op.paymasterAndData = newValue}
+        get { return op.paymasterAndData }
+        set { op.paymasterAndData = newValue }
     }
 
     public var signature: Data {
-        get { return op.signature}
-        set {op.signature = newValue }
+        get { return op.signature }
+        set { op.signature = newValue }
     }
 
     public func useMiddleware(_ middleware: UserOperationMiddleware) {
