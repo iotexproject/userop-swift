@@ -1,12 +1,12 @@
 Pod::Spec.new do |spec|
-    spec.name         = 'Userop'
+    spec.name         = 'userop'
     spec.version      = '0.0.1'
     spec.ios.deployment_target = "13.0"
     spec.osx.deployment_target = "12.0"
     spec.license      = { :type => 'MIT License', :file => 'LICENSE.md' }
     spec.summary      = 'swift version of https://github.com/stackup-wallet/userop.js'
     spec.homepage     = 'https://github.com/iotexproject/userop-swift'
-    spec.author       = {}
+    spec.author       = { 'zhanliugang' => 'zhangliugang@gmail.com' }
     spec.source       = { :git => 'https://github.com/iotexproject/userop-swift.git', :tag => spec.version.to_s }
     spec.swift_version = '5.8'
 
