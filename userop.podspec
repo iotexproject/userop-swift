@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
     spec.name         = 'userop'
     spec.version      = '0.0.1'
-    spec.ios.deployment_target = "13.0"
+    spec.ios.deployment_target = "14.0"
     spec.osx.deployment_target = "12.0"
     spec.license      = { :type => 'MIT License', :file => 'LICENSE.md' }
     spec.summary      = 'swift version of https://github.com/stackup-wallet/userop.js'

@@ -15,8 +15,8 @@ public struct SendUserOperationResponse {
     let entryPoint: IEntryPoint
 
     func wait() async throws -> EventLog? {
-        let end = Date.now.addingTimeInterval(300)
-        while Date.now.distance(to: end) > 0 {
+        let end = Date().addingTimeInterval(300)
+        while Date().distance(to: end) > 0 {
             let events = try await entryPoint.queryUserOperationEvent(userOpHash: userOpHash)
             if !events.isEmpty {
                 return events[0]
