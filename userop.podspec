@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = 'Userop'
-    spec.version      = 0.0.0
+    spec.version      = '0.0.1'
     spec.ios.deployment_target = "13.0"
     spec.osx.deployment_target = "12.0"
     spec.license      = { :type => 'MIT License', :file => 'LICENSE.md' }
@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
     spec.swift_version = '5.8'
 
     spec.source_files =  "Sources/userop-swift/**/*.swift"
-    spec.frameworks = 'CoreImage'
+    spec.frameworks = 'Foudation'
 
     spec.dependency 'Web3Core'
     spec.dependency 'web3swift'
