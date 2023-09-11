@@ -48,7 +48,7 @@ public class P256AccountBuilder: UserOperationBuilder {
         self.proxy = P256Account(web3: web3, address: EthereumAddress.zero)
         super.init()
 
-        initCode = await factory.addressData +
+        initCode = try await factory.addressData +
          self.factory.contract.method("createAccount", parameters: [signer.getPublicKey(), salt ?? 0], extraData: nil)!
 
         let address = try await self.entryPoint.getSenderAddress(initCode: initCode)

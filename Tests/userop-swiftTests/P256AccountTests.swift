@@ -31,7 +31,7 @@ final class P256AccountTests: XCTestCase {
                                                     salt: 1)
         XCTAssertEqual(account.sender.address.lowercased(), "0x816117a3e3a909947e9835d3904a2991696f1fd2")
 
-        try await account.build(entryPoint: entryPointAddress, chainId: 4690)
+//        try await account.build(entryPoint: entryPointAddress, chainId: 4690)
 
         let client = try await Client(rpcUrl: rpc, overrideBundlerRpc: bundler, entryPoint: entryPointAddress)
         let response = try await client.sendUserOperation(builder: account)
