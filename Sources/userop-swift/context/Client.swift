@@ -65,9 +65,15 @@ public class Client: IClient {
         let op = try await buildUserOperation(builder: builder)
         onBuild?(op)
 
-        let userOphash: String  = try await provider.send("eth_sendUserOperation", parameter: [op, entryPoint.address]).result
-        builder.reset()
+        defer {
+            builder.reset()
+        }
 
+        return try await sendUserOperation(userOp: op)
+    }
+
+    public func sendUserOperation(userOp: UserOperation) async throws -> SendUserOperationResponse {
+        let userOphash: String  = try await provider.send("eth_sendUserOperation", parameter: [userOp, entryPoint.address]).result
         return .init(userOpHash: userOphash, entryPoint: entryPoint)
     }
 }

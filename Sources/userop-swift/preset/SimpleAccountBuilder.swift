@@ -39,6 +39,7 @@ public class SimpleAccountBuilder: UserOperationBuilder {
                 entryPoint: EthereumAddress = EthereumAddress(ERC4337.entryPoint)!,
                 factory: EthereumAddress = EthereumAddress(ERC4337.SimpleAccount.factory)!,
                 salt: BigInt? = nil,
+                senderAddress: EthereumAddress? = nil,
                 paymasterMiddleware: UserOperationMiddleware? = nil) async throws {
         self.signer = signer
         self.provider = try await BundlerJsonRpcProvider(url: rpcUrl, bundlerRpc: bundleRpcUrl)
@@ -51,9 +52,14 @@ public class SimpleAccountBuilder: UserOperationBuilder {
         initCode = await factory.addressData +
          self.factory.contract.method("createAccount", parameters: [signer.getAddress(), salt ?? 0], extraData: nil)!
 
-        let address = try await self.entryPoint.getSenderAddress(initCode: initCode)
-        self.proxy.address = address
-        self.sender = address
+        if let senderAddress = senderAddress {
+            self.proxy.address = senderAddress
+            self.sender = senderAddress
+        } else {
+            let address = try await self.entryPoint.getSenderAddress(initCode: initCode)
+            self.proxy.address = address
+            self.sender = address
+        }
         self.signature = try await signer.signMessage(Data(hex: "0xdead").sha3(.keccak256))
 
         useMiddleware(ResolveAccountMiddleware(entryPoint: self.entryPoint, initCode: initCode))
