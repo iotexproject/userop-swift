@@ -48,6 +48,7 @@ extension VerifyingPaymasterResult {
     }
 }
 
+/// Middleware to get gas sponsor from paymaster service.
 public struct VerifyingPaymasterMiddleware: UserOperationMiddleware {
     let paymasterRpc: URL
 

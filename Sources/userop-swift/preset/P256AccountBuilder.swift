@@ -10,6 +10,7 @@ import Foundation
 import Web3Core
 import web3swift
 
+/// Implement `UserOperationBuilder` for P256Account
 public class P256AccountBuilder: UserOperationBuilder {
     struct ResolveAccountMiddleware: UserOperationMiddleware {
         private let entryPoint: IEntryPoint
@@ -33,6 +34,17 @@ public class P256AccountBuilder: UserOperationBuilder {
     public let factory: IP256AccountFactory
     public let proxy: IP256Account
 
+    /// Initializer
+    ///
+    /// - Parameters:
+    ///   - signer: A signer to sign `UserOperation`
+    ///   - rpcUrl: JSON-RPC server address
+    ///   - bundleRpcUrl: Bundler address. if not porvided, bundler RPC methods will be sent to `rpcUrl`
+    ///   - entryPoint: EntryPoint contract address
+    ///   - factory: SimpleAccountFactory contract address
+    ///   - salt: Salt
+    ///   - senderAddress: Pass this parameter if already got from entryPoint`
+    ///   - paymasterMiddleware: Paymaster entry address
     public init(signer: Signer,
                 rpcUrl: URL,
                 bundleRpcUrl: URL? = nil,

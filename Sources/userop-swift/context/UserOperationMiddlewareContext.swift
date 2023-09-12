@@ -4,6 +4,7 @@
 //
 //  Created by liugang zhang on 2023/8/21.
 //
+
 import BigInt
 import Foundation
 import Web3Core
@@ -29,6 +30,8 @@ public class UserOperationMiddlewareContext: UserOperationMiddlewareContextType 
         self.chainId = chainId
     }
 
+    /// Encode `UserOperationHash`
+    /// - Returns: UserOperationHash
     public func getUserOpHash() -> String {
         let packed = ABIEncoder.encode(types: [
             .address,

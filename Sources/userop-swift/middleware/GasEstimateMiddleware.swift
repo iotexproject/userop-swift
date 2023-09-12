@@ -42,6 +42,7 @@ extension GasEstimate {
     }
 }
 
+/// Middleware to estiamte `UserOperation` gas from bundler server.
 public struct GasEstimateMiddleware: UserOperationMiddleware {
     let rpcProvider: JsonRpcProvider
 

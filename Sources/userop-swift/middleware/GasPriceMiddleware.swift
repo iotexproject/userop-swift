@@ -9,6 +9,9 @@ import Foundation
 import BigInt
 import Web3Core
 
+/// Middleware to get gas price from rpc server.
+///
+/// If rpc server did not provider `eth_maxPriorityFeePerGas` method, user `eth_getPrice` instead.
 public struct GasPriceMiddleware: UserOperationMiddleware {
     private let provider: JsonRpcProvider
 

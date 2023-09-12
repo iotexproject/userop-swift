@@ -10,10 +10,14 @@ import BigInt
 import Web3Core
 import web3swift
 
+/// Wrap the response of `eth_sendUserOperation` RPC call
 public struct SendUserOperationResponse {
     let userOpHash: String
     let entryPoint: IEntryPoint
 
+    /// Loop to wait the transaction to be mined
+    ///
+    /// - Returns: `UserOperationEvent` event log
     func wait() async throws -> EventLog? {
         let end = Date().addingTimeInterval(300)
         while Date().distance(to: end) > 0 {

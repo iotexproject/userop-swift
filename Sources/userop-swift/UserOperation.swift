@@ -13,6 +13,7 @@ let defaultVerificationGasLimit = BigUInt(70000)
 let defaultCallGasLimit = BigUInt(35000)
 let defaultPreVerificationGas = BigUInt(21000)
 
+/// UserOperation Entity
 public struct UserOperation: Encodable {
     var sender: EthereumAddress
     var nonce: BigUInt
@@ -93,6 +94,7 @@ public protocol IUserOperationBuilder {
     func reset()
 }
 
+/// Default implement for `UserOperation` builder
 open class UserOperationBuilder: IUserOperationBuilder {
     private var op: UserOperation
     private var middlewares = [UserOperationMiddleware]()
@@ -130,7 +132,7 @@ open class UserOperationBuilder: IUserOperationBuilder {
 
     public var verificationGasLimit: BigUInt {
         get { return op.verificationGasLimit }
-        set { op.verificationGasLimit = newValue}
+        set { op.verificationGasLimit = newValue }
     }
 
     public var preVerificationGas: BigUInt {

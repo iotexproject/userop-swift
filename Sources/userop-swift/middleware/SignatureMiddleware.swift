@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Middleware to sign `UserOperation` signature
 public struct SignatureMiddleware: UserOperationMiddleware {
     let signer: Signer
     
