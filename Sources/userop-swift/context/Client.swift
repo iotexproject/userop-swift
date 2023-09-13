@@ -12,13 +12,13 @@ import web3swift
 
 /// Wrap the response of `eth_sendUserOperation` RPC call
 public struct SendUserOperationResponse {
-    let userOpHash: String
-    let entryPoint: IEntryPoint
+    public let userOpHash: String
+    public let entryPoint: IEntryPoint
 
     /// Loop to wait the transaction to be mined
     ///
     /// - Returns: `UserOperationEvent` event log
-    func wait() async throws -> EventLog? {
+    public func wait() async throws -> EventLog? {
         let end = Date().addingTimeInterval(300)
         while Date().distance(to: end) > 0 {
             let events = try await entryPoint.queryUserOperationEvent(userOpHash: userOpHash)
@@ -38,7 +38,7 @@ public protocol IClient {
 }
 
 extension IClient {
-    func sendUserOperation(builder: IUserOperationBuilder)  async throws -> SendUserOperationResponse {
+    public func sendUserOperation(builder: IUserOperationBuilder)  async throws -> SendUserOperationResponse {
         try await sendUserOperation(builder: builder, onBuild: nil)
     }
 }
