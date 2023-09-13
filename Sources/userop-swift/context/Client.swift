@@ -49,11 +49,11 @@ public class Client: IClient {
 
     public let entryPoint: EntryPoint
 
-    var chainId: BigUInt {
+    public var chainId: BigUInt {
         web3.provider.network!.chainID
     }
 
-    init(rpcUrl: URL,
+    public init(rpcUrl: URL,
          overrideBundlerRpc: URL? = nil,
          entryPoint: EthereumAddress = EthereumAddress(ERC4337.entryPoint)!) async throws {
         self.provider = try await BundlerJsonRpcProvider(url: rpcUrl, bundlerRpc: overrideBundlerRpc)
