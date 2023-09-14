@@ -15,7 +15,7 @@ import Web3Core
 public struct GasPriceMiddleware: UserOperationMiddleware {
     private let provider: JsonRpcProvider
 
-    init(provider: JsonRpcProvider) {
+    public init(provider: JsonRpcProvider) {
         self.provider = provider
     }
 

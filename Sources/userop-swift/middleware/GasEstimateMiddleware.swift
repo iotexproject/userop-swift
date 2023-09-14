@@ -46,6 +46,10 @@ extension GasEstimate {
 public struct GasEstimateMiddleware: UserOperationMiddleware {
     let rpcProvider: JsonRpcProvider
 
+    public init(rpcProvider: JsonRpcProvider) {
+        self.rpcProvider = rpcProvider
+    }
+
     public func process(_ ctx: inout UserOperationMiddlewareContext) async throws {
         let estimate: GasEstimate = try await rpcProvider.send("eth_estimateUserOperationGas", parameter: [ctx.op, ctx.entryPoint]).result
 

@@ -52,6 +52,10 @@ extension VerifyingPaymasterResult {
 public struct VerifyingPaymasterMiddleware: UserOperationMiddleware {
     let paymasterRpc: URL
 
+    public init(paymasterRpc: URL) {
+        self.paymasterRpc = paymasterRpc
+    }
+
     public func process(_ ctx: inout UserOperationMiddlewareContext) async throws {
         ctx.op.verificationGasLimit = ctx.op.verificationGasLimit * 3
         let provider = try await JsonRpcProvider(url: paymasterRpc, ignoreNet: true)
