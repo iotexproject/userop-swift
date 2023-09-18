@@ -1,8 +1,14 @@
-![Iotex-IoPay](https://github.com/iotexproject/userop-swift/assets/16026265/81eb0957-e305-4b8c-ad36-1dbddd19f623)
+![Iotex-IoPay](https://github.com/iotexproject/userop-swift/assets/16026265/46911948-aa87-4fd3-9ddb-0a504f801f3f)
+
 
 # userop-swift
+
+
+
+## Summary
+An account abstraction proposal which completely avoids the need for consensus-layer protocol changes. Instead of adding new protocol features and changing the bottom-layer transaction type, this proposal instead introduces a higher-layer pseudo-transaction object called a UserOperation. Users send UserOperation objects into a separate mempool. A special class of actor called bundlers package up a set of these objects into a transaction making a handleOps call to a special contract, and that transaction then gets included in a block.
  
-swift version of https://github.com/stackup-wallet/userop.js
+[ERC-4337: Account Abstraction Using Alt Mempool](https://eips.ethereum.org/EIPS/eip-4337)
 
 ## Install
 
