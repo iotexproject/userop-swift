@@ -1,3 +1,5 @@
+![Iotex-IoPay](https://github.com/iotexproject/userop-swift/assets/16026265/81eb0957-e305-4b8c-ad36-1dbddd19f623)
+
 # userop-swift
  
 swift version of https://github.com/stackup-wallet/userop.js
