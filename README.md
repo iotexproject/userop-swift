@@ -62,6 +62,8 @@ let eventLog = try await response.wait()
 let hash = eventLog?.transactionHash
 ```
 
+> Once you activeated your account, you can pass it as `senderAddress` into AccountBuilder. In this case, `salt` will be ignored.
+
 ### Send ETH
 ```swift
 accountBuilder.execute(to: address, value: Utilities.parseToBigUInt("1", units: .ether)!, data: Data())

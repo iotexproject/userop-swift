@@ -36,8 +36,8 @@ public class SimpleAccountBuilder: UserOperationBuilder {
     public init(signer: Signer,
                 rpcUrl: URL,
                 bundleRpcUrl: URL? = nil,
-                entryPoint: EthereumAddress = EthereumAddress(ERC4337.entryPoint)!,
-                factory: EthereumAddress = EthereumAddress(ERC4337.SimpleAccount.factory)!,
+                entryPoint: EthereumAddress,
+                factory: EthereumAddress,
                 salt: BigInt? = nil,
                 senderAddress: EthereumAddress? = nil,
                 paymasterMiddleware: UserOperationMiddleware? = nil) async throws {

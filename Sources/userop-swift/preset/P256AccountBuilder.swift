@@ -12,6 +12,7 @@ import web3swift
 
 /// Implement `UserOperationBuilder` for P256Account
 public class P256AccountBuilder: UserOperationBuilder {
+    /// If sender has been deployed, reset `initCode` to empty
     struct ResolveAccountMiddleware: UserOperationMiddleware {
         private let entryPoint: IEntryPoint
         private let initCode: Data
@@ -42,9 +43,9 @@ public class P256AccountBuilder: UserOperationBuilder {
     ///   - bundleRpcUrl: Bundler address. if not porvided, bundler RPC methods will be sent to `rpcUrl`
     ///   - entryPoint: EntryPoint contract address
     ///   - factory: SimpleAccountFactory contract address
-    ///   - salt: Salt
-    ///   - senderAddress: Pass this parameter if already got from entryPoint`
-    ///   - paymasterMiddleware: Paymaster entry address
+    ///   - salt: Salt, if sender is not nil and has been deployed, this parameter will be ignored
+    ///   - senderAddress: Pass this parameter if already got from entryPoint
+    ///   - paymasterMiddleware: Paymaster entry address, if not provided, `GasEstimateMiddleware` will be used
     public init(signer: Signer,
                 rpcUrl: URL,
                 bundleRpcUrl: URL? = nil,

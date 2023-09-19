@@ -55,7 +55,7 @@ public class Client: IClient {
 
     public init(rpcUrl: URL,
          overrideBundlerRpc: URL? = nil,
-         entryPoint: EthereumAddress = EthereumAddress(ERC4337.entryPoint)!) async throws {
+         entryPoint: EthereumAddress) async throws {
         self.provider = try await BundlerJsonRpcProvider(url: rpcUrl, bundlerRpc: overrideBundlerRpc)
         self.web3 = Web3(provider: provider)
         self.entryPoint = EntryPoint(web3: web3, address: entryPoint)
