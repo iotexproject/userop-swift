@@ -33,25 +33,60 @@ Webauthn: Web Authentication (WebAuthn) is a web standard published by the World
 
 ## Usage
 
-### Signer
-For `SimpleAccount`, sign UserOpHash by `Web3Signer` method, pass `useHash` as true:
+### Create Signer
+Example for secp256k1
 ```swift
-static func signPersonalMessage<T>(Data, keystore: T, account: EthereumAddress, password: String, useHash: Bool, useExtraEntropy: Bool) throws -> Data?
+struct SimpleSigner: Signer {
+    private let privateKey: Data
+
+    init(privateKey: Data) {
+        self.privateKey = privateKey
+    }
+
+    func getAddress() async -> EthereumAddress {
+        try! await Utilities.publicToAddress(getPublicKey())!
+    }
+
+    func getPublicKey() async throws -> Data {
+        Utilities.privateToPublic(privateKey)!
+    }
+
+    func signMessage(_ data: Data) async throws -> Data {
+        let (compressedSignature, _) = SECP256K1.signForRecovery(hash: data,
+                                                                 privateKey: privateKey,
+                                                                 useExtraEntropy: false)
+        return compressedSignature!
+    }
+}
+
 ```
 
-For `P256Account`, sign UserOpHash as follows: 
+Example for secpk256r1
 ```swift
-func signMessage(_ data: Data) async throws -> Data {
-    let signed = SecKeyCreateSignature(pk, .ecdsaSignatureMessageX962SHA256, data as CFData, nil)! as Data
-    let xLength = UInt(from: signed[3..<4].toHexString())!
+struct P256Signer: Signer {
+    private let privateKey: SecKey!
 
-    let signatureArray = [
-        signed[4..<xLength + 4],
-        signed[(xLength + 6)...]
-    ]
+    func getAddress() async -> Web3Core.EthereumAddress {
+        fatalError("Don't call this function, get address from p256 key is not supported.")
+    }
+    
+    func getPublicKey() async throws -> Data {
+        let data = SecKeyCopyExternalRepresentation(privateKey, nil)
+        return (data! as Data)[1...]
+    }
+    
+    func signMessage(_ data: Data) async throws -> Data {
+        let signed = SecKeyCreateSignature(privateKey, .ecdsaSignatureMessageX962SHA256, data as CFData, nil)! as Data
+        let xLength = UInt(from: signed[3..<4].toHexString())!
 
-    let encoded = ABIEncoder.encode(types: [.uint(bits: 256), .uint(bits: 256)], values: signatureArray)
-    return encoded!
+        let signatureArray = [
+            signed[4..<xLength + 4],
+            signed[(xLength + 6)...]
+        ]
+
+        let encoded = ABIEncoder.encode(types: [.uint(bits: 256), .uint(bits: 256)], values: signatureArray)
+        return encoded!
+    }
 }
 ```
 
