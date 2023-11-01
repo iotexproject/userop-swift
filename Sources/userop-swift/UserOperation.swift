@@ -15,17 +15,17 @@ let defaultPreVerificationGas = BigUInt(21000)
 
 /// UserOperation Entity
 public struct UserOperation: Encodable {
-    var sender: EthereumAddress
-    var nonce: BigUInt
-    var initCode: Data
-    var callData: Data
-    var callGasLimit: BigUInt
-    var verificationGasLimit: BigUInt
-    var preVerificationGas: BigUInt
-    var maxFeePerGas: BigUInt
-    var maxPriorityFeePerGas: BigUInt
-    var paymasterAndData: Data
-    var signature: Data
+    public var sender: EthereumAddress
+    public var nonce: BigUInt
+    public var initCode: Data
+    public var callData: Data
+    public var callGasLimit: BigUInt
+    public var verificationGasLimit: BigUInt
+    public var preVerificationGas: BigUInt
+    public var maxFeePerGas: BigUInt
+    public var maxPriorityFeePerGas: BigUInt
+    public var paymasterAndData: Data
+    public var signature: Data
 
     static var `default`: Self {
         UserOperation(
