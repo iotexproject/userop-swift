@@ -1,5 +1,3 @@
-![Iotex-IoPay](https://github.com/iotexproject/userop-swift/assets/16026265/46911948-aa87-4fd3-9ddb-0a504f801f3f)
-
 
 # userop-swift
 
